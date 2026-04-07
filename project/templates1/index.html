@@ -20,6 +20,7 @@
     {% for note in notes %}
         <p><b>{{ note.title }}</b></p>
         <p>{{ note.content }}</p>
+        <a href="/edit_note/{{ loop.index0 }}">Uredi</a>
         <a href="/delete_note/{{ loop.index0 }}">Izbriši</a>
         <hr>
     {% endfor %}

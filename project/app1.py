@@ -86,5 +86,33 @@ def logout():
     session.pop('username', None)
     return redirect(url_for('login'))
 
+@app.route('/edit_note/<int:note_id>', methods=['GET', 'POST'])
+def edit_note(note_id):
+    if 'username' not in session:
+        return redirect(url_for('login'))
+
+    user_notes = notes.search(Note.username == session['username'])
+
+    if 0 <= note_id < len(user_notes):
+        note_edit = user_notes[note_id]
+
+        if request.method == 'POST':
+            new_title = request.form['title']
+            new_content = request.form['content']
+
+            notes.update(
+                {
+                    'title': new_title,
+                    'content': new_content
+                },
+                doc_ids=[note_edit.doc_id]
+            )
+
+            return redirect(url_for('index'))
+
+        return render_template('edit_note.html', note=note_edit, note_id=note_id)
+
+    return redirect(url_for('index'))
+
 if __name__ == "__main__":
     app.run(debug=True, port=5000)

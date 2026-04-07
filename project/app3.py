@@ -1,7 +1,7 @@
 from flask import Flask, render_template, request, redirect, url_for
 import os
 
-app = Flask(__name__, template_folder="templates2", static_folder="static2")
+app = Flask(__name__, template_folder="templates3", static_folder="static3")
 app.secret_key = os.urandom(24)
 
 @app.route('/')
