@@ -4,6 +4,26 @@
     <title>Zapiski</title>
 </head>
 <body>
-    <h1>Zapiski</h1>
+    <h2>Zapiski</h2>
+    <h3>Pozdravljeni {{ username }}!</h3>
+
+    <form action="/add_note" method="post">
+        <input type="text" name="title" placeholder="naslov">
+        <br><br>
+        <textarea name="content" cols="50" rows="10" placeholder="Vpiši zapisek"></textarea>
+        <br><br>
+        <button type="submit">Shrani</button>
+    </form>
+
+    <h3>Moji zapiski:</h3>
+
+    {% for note in notes %}
+        <p><b>{{ note.title }}</b></p>
+        <p>{{ note.content }}</p>
+        <a href="/delete_note/{{ loop.index0 }}">Izbriši</a>
+        <hr>
+    {% endfor %}
+
+    <a href="/logout">Odjava</a>
 </body>
 </html>
