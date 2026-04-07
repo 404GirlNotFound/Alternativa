@@ -15,7 +15,7 @@ def add_note():
     if request.method == 'POST':
         title = request.form['title']
         content = request.form['content']
-        notes.append({'username' : session['username'] 'title': title, 'content': content})
+        notes.append({'username': session['username'], 'title': title, 'content': content})
         return redirect(url_for('index'))
 
 
@@ -63,6 +63,21 @@ def login():
         return "Napačno uporabniško ime ali geslo."
             
     return render_template('login.html')
+
+@app.route('/register', methods=['GET', 'POST'])
+def register():
+    if request.method == 'POST':
+        username = request.form['username']
+        password = request.form['password']
+
+        for user in users: 
+            if user['username'] == username:
+                return "Ta uporabnik že obstaja"
+            
+        users.append({'username': username, 'password': password})
+        return redirect(url_for('login'))
+    
+    return render_template('register.html')
 
 if __name__ == "__main__":
     app.run(debug=True, port=5000)
