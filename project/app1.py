@@ -1,11 +1,16 @@
-from flask import Flask, render_template, request, redirect, url_for, session
+from flask import Flask, render_template, request, redirect, session, url_for
+from tinydb import TinyDB, Query
 import os
 
 app = Flask(__name__, template_folder="templates1", static_folder="static1")
 app.secret_key = os.urandom(24)
 
-users = []
-notes = []
+db = TinyDB("db/db1.json")
+users = db.table("users")
+notes = db.table("notes")
+
+User = Query()
+Note = Query()
 
 @app.route('/add_note', methods=['POST'])
 def add_note():
@@ -15,7 +20,12 @@ def add_note():
     if request.method == 'POST':
         title = request.form['title']
         content = request.form['content']
-        notes.append({'username': session['username'], 'title': title, 'content': content})
+        notes.insert({
+            'username': session['username'],
+            'title': title,
+            'content': content
+        })
+
         return redirect(url_for('index'))
 
 
@@ -24,15 +34,11 @@ def delete_note(note_id):
     if 'username' not in session:
         return redirect(url_for('login'))
     
-    user_notes_ids = []
-
-    for i in range(len(notes)):
-        if notes[i]['username'] == session['username']:
-            user_notes_ids.append(i)
+    user_notes = notes.search(Note.username == session['username'])
     
-    if 0<= note_id < len(user_notes_ids):
-        real_index = user_notes_ids[note_id]
-        notes.pop(real_index)
+    if 0<= note_id < len(user_notes):
+        note_delete = user_notes[note_id]
+        notes.remove(doc_ids=[note_delete.doc_id])
     
     return redirect(url_for('index'))
 
@@ -41,11 +47,7 @@ def index():
     if 'username' not in session:
         return redirect(url_for('login'))
     
-    user_notes = []
-    
-    for note in notes:
-        if note['username'] == session["username"]:
-            user_notes.append(note)
+    user_notes = notes.search(Note.username == session['username'])
     
     return render_template('index.html', notes=user_notes, username=session['username'])
 
@@ -55,10 +57,11 @@ def login():
         username = request.form['username']
         password = request.form['password']
 
-        for user in users:
-            if user['username'] == username and user['password'] == password:
-                session['username'] = username
-                return redirect(url_for('index'))
+        user = users.get(User.username == username)
+
+        if user and user['password'] == password:
+            session['username'] = username
+            return redirect(url_for('index'))
         
         return "Napačno uporabniško ime ali geslo."
             
@@ -70,11 +73,10 @@ def register():
         username = request.form['username']
         password = request.form['password']
 
-        for user in users: 
-            if user['username'] == username:
-                return "Ta uporabnik že obstaja"
+        if users.search(User.username == username):
+            return "Ta uporabnik že obstaja"
             
-        users.append({'username': username, 'password': password})
+        users.insert({'username': username, 'password': password})
         return redirect(url_for('login'))
     
     return render_template('register.html')
