@@ -53,5 +53,33 @@ def login():
             
     return render_template('login.html')
 
+@app.route('/logout')
+def logout():
+    session.pop('username', None)
+    return redirect(url_for('login'))
+
+@app.route("/add_post", methods=["POST"])
+def add_post():
+    if "username" not in session:
+        return redirect(url_for("login"))
+
+    content = request.form["content"]
+    image = request.files.get("image")
+
+    filename = ""
+
+    if image:
+        filename = str(uuid.uuid4()) + "_" + image.filename
+        image.save("static2/uploads/" + filename)
+
+    posts.insert({
+        "username": session["username"],
+        "content": content,
+        "image": filename,
+        "likes": 0
+    })
+
+    return redirect(url_for("index"))
+
 if __name__ == "__main__":
     app.run(debug=True, port=5001)

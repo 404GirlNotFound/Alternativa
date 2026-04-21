@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="sl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>App2</title>
+</head>
+<body>
+
+    <h1>Družabno omrežje</h1>
+
+    {% if 'username' in session %}
+        <p>Ste prijavljeni kot {{ session['username'] }}</p>
+        <a href="{{ url_for('logout') }}">Odjava</a>
+    {% else %}
+        <a href="{{ url_for('login') }}">Prijava</a> | 
+        <a href="{{ url_for('register') }}">Registracija</a>
+    {% endif %}
+
+    <h2>Dodaj objavo</h2>
+    <form action="{{ url_for('add_post') }}" method="POST" enctype="multipart/form-data">
+        <textarea name="content" rows="4" cols="50" placeholder="Vpišite svojo objavo..."></textarea><br><br>
+        <input type="file" name="image"><br><br>
+        <button type="submit">Objavi</button>
+    </form>
+
+    <h2>Objave</h2>
+
+    {% if posts %}
+        <ul>
+        {% for post in posts %}
+            <li>
+                <strong>{{ post['username'] }}</strong>
+                <p>{{ post['content'] }}</p>
+                {% if post['image'] %}
+                    <img src="{{ url_for('static', filename='uploads/' + post['image']) }}" alt="Slika" width="300">
+                {% endif %}
+                <p>Likes: {{ post['likes'] }}</p>
+            </li>
+        {% endfor %}
+        </ul>
+    {% else %}
+        <p>Ni objav</p>
+    {% endif %}
+    
+</body>
+</html>
