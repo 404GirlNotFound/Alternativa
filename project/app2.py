@@ -81,5 +81,34 @@ def add_post():
 
     return redirect(url_for("index"))
 
+@app.route("/like_post/<int:post_id>", methods=["POST"])
+def like_post(post_id):
+    if "username" not in session:
+        return "You must be logged in to like a post."
+
+    all_posts = posts.all()
+
+    post_to_like = all_posts[post_id]
+
+    if session["username"] == post_to_like["username"]:
+        return "You cannot like your own post."
+
+    if "liked_by" not in post_to_like:
+        post_to_like["liked_by"] = []
+
+    if session["username"] in post_to_like["liked_by"]:
+        post_to_like["likes"] -= 1
+        post_to_like["liked_by"].remove(session["username"])
+    else:
+        post_to_like["likes"] += 1
+        post_to_like["liked_by"].append(session["username"])
+
+    posts.update(
+        {"likes": post_to_like["likes"], "liked_by": post_to_like["liked_by"]},
+        doc_ids=[post_to_like.doc_id]
+    )
+
+    return redirect(url_for("index"))
+
 if __name__ == "__main__":
     app.run(debug=True, port=5001)

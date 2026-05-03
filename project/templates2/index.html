@@ -36,6 +36,10 @@
                     <img src="{{ url_for('static', filename='uploads/' + post['image']) }}" alt="Slika" width="300">
                 {% endif %}
                 <p>Likes: {{ post['likes'] }}</p>
+
+                <form action="{{ url_for('like_post', post_id=loop.index0) }}" method="POST">
+                    <button type="submit">Like</button>
+                </form>
             </li>
         {% endfor %}
         </ul>

@@ -1,1 +1,1 @@
-{"posts": {"1": {"username": "tia", "content": "Ma\u010dka", "image": "149b2dec-cca9-46a6-9aef-0dc858c0c8ec_cat.webp", "likes": 0}}}
+{"posts": {"1": {"username": "tia", "content": "Ma\u010dka", "image": "149b2dec-cca9-46a6-9aef-0dc858c0c8ec_cat.webp", "likes": 6, "liked_by": ["nika"]}}, "users": {"1": {"username": "tia", "password": "1234"}, "2": {"username": "nika", "password": "0987"}}}
