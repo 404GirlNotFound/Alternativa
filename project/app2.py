@@ -76,7 +76,8 @@ def add_post():
         "username": session["username"],
         "content": content,
         "image": filename,
-        "likes": 0
+        "likes": 0,
+        "liked_by": []
     })
 
     return redirect(url_for("index"))
@@ -84,14 +85,12 @@ def add_post():
 @app.route("/like_post/<int:post_id>", methods=["POST"])
 def like_post(post_id):
     if "username" not in session:
-        return "You must be logged in to like a post."
+        return redirect(url_for("login"))
 
-    all_posts = posts.all()
-
-    post_to_like = all_posts[post_id]
+    post_to_like = posts.get(doc_id=post_id)
 
     if session["username"] == post_to_like["username"]:
-        return "You cannot like your own post."
+        return "Ne morete všečkati svoje objave"
 
     if "liked_by" not in post_to_like:
         post_to_like["liked_by"] = []
@@ -104,8 +103,11 @@ def like_post(post_id):
         post_to_like["liked_by"].append(session["username"])
 
     posts.update(
-        {"likes": post_to_like["likes"], "liked_by": post_to_like["liked_by"]},
-        doc_ids=[post_to_like.doc_id]
+        {
+            "likes": post_to_like["likes"],
+            "liked_by": post_to_like["liked_by"]
+        },
+        doc_ids=[post_id]
     )
 
     return redirect(url_for("index"))
