@@ -6,7 +6,7 @@ app.secret_key = os.urandom(24)
 
 @app.route('/')
 def home():
-    return ("neki")
+    return ("Stran za izgubljene stvari")
 
 if __name__ == "__main__":
     app.run(debug=True, port=5002)

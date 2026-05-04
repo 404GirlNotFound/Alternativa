@@ -1,0 +1,158 @@
+/* General reset */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Comic Sans MS', sans-serif; /* Playful font */
+    background-color: #fce4ec; /* Soft pink background */
+    color: #6a1b9a; /* Purple text */
+    padding: 20px;
+}
+
+h2 {
+    text-align: center;
+    margin-bottom: 20px;
+    color: #e91e63; /* Pink color */
+    font-size: 36px;
+    font-family: 'Lobster', cursive; /* Cute cursive font */
+}
+
+h3 {
+    color: #9c27b0; /* Purple shade */
+    margin-bottom: 10px;
+    font-size: 24px;
+}
+
+h4 {
+    color: #ab47bc; /* Lighter purple for headings */
+}
+
+/* Form styling */
+form {
+    background-color: #fff;
+    padding: 25px;
+    border-radius: 12px;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+    margin-bottom: 30px;
+    width: 100%;
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+    border: 2px solid #f48fb1; /* Soft pink border */
+}
+
+form input[type="text"],
+form input[type="password"],
+form textarea {
+    width: 100%;
+    padding: 15px;
+    margin-bottom: 15px;
+    border: 2px solid #f48fb1; /* Soft pink borders */
+    border-radius: 10px;
+    font-size: 16px;
+    background-color: #fce4ec; /* Light pink background for inputs */
+    color: #6a1b9a; /* Purple text */
+}
+
+form button {
+    width: 100%;
+    padding: 12px;
+    background-color: #ff4081; /* Bright pink */
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-size: 18px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+form button:hover {
+    background-color: #e91e63; /* Slightly darker pink */
+}
+
+/* Links */
+a {
+    color: #ff4081; /* Girly pink */
+    text-decoration: none;
+    font-size: 18px;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+/* Notes section */
+#notes {
+    margin-top: 30px;
+}
+
+.note {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 15px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+    border-left: 5px solid #ff4081; /* Pink left border for notes */
+}
+
+.note p {
+    margin-bottom: 10px;
+    font-size: 18px;
+    color: #6a1b9a;
+}
+
+.note a {
+    margin-right: 10px;
+    color: #ff4081;
+    font-weight: bold;
+}
+
+.note a:hover {
+    color: #e91e63;
+}
+
+.note button {
+    background-color: #ff80ab;
+    color: white;
+    padding: 8px 16px;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.note button:hover {
+    background-color: #f06292;
+}
+
+/* Cutesy icons for actions */
+.note a:before {
+    content: "💖"; /* Heart icon for edit and delete */
+    margin-right: 5px;
+}
+
+/* Responsive Design */
+@media (max-width: 600px) {
+    body {
+        padding: 10px;
+    }
+
+    form {
+        padding: 20px;
+    }
+
+    h2 {
+        font-size: 28px;
+    }
+
+    h3 {
+        font-size: 22px;
+    }
+
+    .note {
+        font-size: 16px;
+    }
+}
