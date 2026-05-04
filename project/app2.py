@@ -1,18 +1,15 @@
-from flask import Flask, render_template, request, redirect, session, url_for
+from flask import Flask, render_template, request, redirect, session, url_for, jsonify
 from tinydb import TinyDB, Query
 import os
-import uuid
 
 app = Flask(__name__, template_folder="templates2", static_folder="static2")
 app.secret_key = os.urandom(24)
-
 
 db = TinyDB("db2/db.json")
 users = db.table("users")
 posts = db.table("posts")
 
 User = Query()
-Post = Query()
 
 @app.route("/")
 def index():
@@ -23,40 +20,44 @@ def index():
     all_posts.reverse()
     return render_template("index.html", posts=all_posts)
 
-@app.route('/register', methods=['GET', 'POST'])
+@app.route("/register", methods=["GET", "POST"])
 def register():
-    if request.method == 'POST':
-        username = request.form['username']
-        password = request.form['password']
+    if request.method == "POST":
+        username = request.form["username"]
+        password = request.form["password"]
 
-        if users.search(User.username == username):
+        if users.get(User.username == username):
             return "Ta uporabnik že obstaja"
             
-        users.insert({'username': username, 'password': password})
-        return redirect(url_for('login'))
-    
-    return render_template('register.html')
+        users.insert({
+            "username": username,
+            "password": password
+        })
 
-@app.route('/login', methods=['GET', 'POST'])
+        return redirect(url_for("login"))
+    
+    return render_template("register.html")
+
+@app.route("/login", methods=["GET", "POST"])
 def login():
-    if request.method == 'POST':
-        username = request.form['username']
-        password = request.form['password']
+    if request.method == "POST":
+        username = request.form["username"]
+        password = request.form["password"]
 
         user = users.get(User.username == username)
 
-        if user and user['password'] == password:
-            session['username'] = username
-            return redirect(url_for('index'))
+        if user and user["password"] == password:
+            session["username"] = username
+            return redirect(url_for("index"))
         
         return "Napačno uporabniško ime ali geslo."
             
-    return render_template('login.html')
+    return render_template("login.html")
 
-@app.route('/logout')
+@app.route("/logout")
 def logout():
-    session.pop('username', None)
-    return redirect(url_for('login'))
+    session.pop("username", None)
+    return redirect(url_for("login"))
 
 @app.route("/add_post", methods=["POST"])
 def add_post():
@@ -64,18 +65,12 @@ def add_post():
         return redirect(url_for("login"))
 
     content = request.form["content"]
-    image = request.files.get("image")
-
-    filename = ""
-
-    if image:
-        filename = str(uuid.uuid4()) + "_" + image.filename
-        image.save("static2/uploads/" + filename)
+    image = request.form.get("image", "")
 
     posts.insert({
         "username": session["username"],
         "content": content,
-        "image": filename,
+        "image": image,
         "likes": 0,
         "liked_by": []
     })
@@ -84,31 +79,30 @@ def add_post():
 
 @app.route("/like_post/<int:post_id>", methods=["POST"])
 def like_post(post_id):
-    if "username" not in session:
-        return redirect(url_for("login"))
+    post = posts.get(doc_id=post_id)
 
-    post_to_like = posts.get(doc_id=post_id)
-
-    if session["username"] == post_to_like["username"]:
-        return "Ne morete všečkati svoje objave"
-
-    if "liked_by" not in post_to_like:
-        post_to_like["liked_by"] = []
-
-    if session["username"] in post_to_like["liked_by"]:
-        post_to_like["likes"] -= 1
-        post_to_like["liked_by"].remove(session["username"])
+    if session["username"] in post["liked_by"]:
+        post["likes"] = post["likes"] - 1
+        post["liked_by"].remove(session["username"])
     else:
-        post_to_like["likes"] += 1
-        post_to_like["liked_by"].append(session["username"])
+        post["likes"] = post["likes"] + 1
+        post["liked_by"].append(session["username"])
 
-    posts.update(
-        {
-            "likes": post_to_like["likes"],
-            "liked_by": post_to_like["liked_by"]
-        },
-        doc_ids=[post_id]
-    )
+    posts.update({
+        "likes": post["likes"],
+        "liked_by": post["liked_by"]
+    }, doc_ids=[post_id])
+
+    return jsonify({
+        "likes": post["likes"]
+    })
+
+@app.route("/delete_post/<int:post_id>", methods=["POST"])
+def delete_post(post_id):
+    post = posts.get(doc_id=post_id)
+
+    if post["username"] == session["username"]:
+        posts.remove(doc_ids=[post_id])
 
     return redirect(url_for("index"))
 

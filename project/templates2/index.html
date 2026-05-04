@@ -11,17 +11,22 @@
     <h1>Družabno omrežje</h1>
 
     {% if 'username' in session %}
-        <p>Ste prijavljeni kot {{ session['username'] }}</p>
+        <p>Prijavljeni ste kot {{ session['username'] }}</p>
         <a href="{{ url_for('logout') }}">Odjava</a>
     {% else %}
-        <a href="{{ url_for('login') }}">Prijava</a> | 
+        <a href="{{ url_for('login') }}">Prijava</a> |
         <a href="{{ url_for('register') }}">Registracija</a>
     {% endif %}
 
     <h2>Dodaj objavo</h2>
-    <form action="{{ url_for('add_post') }}" method="POST" enctype="multipart/form-data">
-        <textarea name="content" rows="4" cols="50" placeholder="Vpišite svojo objavo..."></textarea><br><br>
-        <input type="file" name="image"><br><br>
+
+    <form action="{{ url_for('add_post') }}" method="POST">
+        <textarea name="content" rows="4" cols="50" placeholder="Vpišite svojo objavo..."></textarea>
+        <br><br>
+
+        <input type="text" name="image" placeholder="Prilepite link do slike">
+        <br><br>
+
         <button type="submit">Objavi</button>
     </form>
 
@@ -29,24 +34,51 @@
 
     {% if posts %}
         <ul>
-        {% for post in posts %}
-            <li>
-                <strong>{{ post['username'] }}</strong>
-                <p>{{ post['content'] }}</p>
-                {% if post['image'] %}
-                    <img src="{{ url_for('static', filename='uploads/' + post['image']) }}" alt="Slika" width="300">
-                {% endif %}
-                <p>Likes: {{ post['likes'] }}</p>
+            {% for post in posts %}
+                <li>
+                    <strong>{{ post['username'] }}</strong>
 
-                <form action="{{ url_for('like_post', post_id=post.doc_id) }}" method="POST">
-                    <button type="submit">Like</button>
-                </form>
-            </li>
-        {% endfor %}
+                    <p>{{ post['content'] }}</p>
+
+                    {% if post['image'] %}
+                        <img src="{{ post['image'] }}" alt="Slika" width="300">
+                    {% endif %}
+
+                    <p>
+                        Likes: <span id="likes-{{ post.doc_id }}">{{ post['likes'] }}</span>
+                    </p>
+
+                    <button onclick="likePost({{ post.doc_id }})">Like</button>
+
+                    {% if post['username'] == session['username'] %}
+                        <form action="{{ url_for('delete_post', post_id=post.doc_id) }}" method="POST">
+                            <button type="submit">Izbriši</button>
+                        </form>
+                    {% endif %}
+                </li>
+            {% endfor %}
         </ul>
     {% else %}
         <p>Ni objav</p>
     {% endif %}
-    
+
+    <script>
+        function likePost(id) {
+            fetch("/like_post/" + id, {
+                method: "POST"
+            })
+            .then(function(odgovor) {
+                return odgovor.json();
+            })
+            .then(function(podatki) {
+                if (podatki.error) {
+                    alert(podatki.error);
+                } else {
+                    document.getElementById("likes-" + id).innerHTML = podatki.likes;
+                }
+            });
+        }
+    </script>
+
 </body>
 </html>
