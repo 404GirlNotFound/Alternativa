@@ -89,6 +89,39 @@ def add_book():
     })
 
     return redirect(url_for("index"))
+ 
+
+@app.route("/edit_book/<int:book_id>", methods=["GET", "POST"])
+def edit_book(book_id):
+    if "username" not in session:
+        return redirect(url_for("login"))
+
+    book = books.get(doc_id=book_id)
+
+    if not book:
+        return "Knjiga ne obstaja."
+
+    if book["username"] != session["username"]:
+        return "Te knjige ne moreš urejati."
+
+    if request.method == "POST":
+        title = request.form["title"]
+        author = request.form["author"]
+        image = request.form.get("image", "")
+        status = request.form["status"]
+        rating = request.form["rating"]
+
+        books.update({
+            "title": title,
+            "author": author,
+            "image": image,
+            "status": status,
+            "rating": rating
+        }, doc_ids=[book_id])
+
+        return redirect(url_for("index"))
+
+    return render_template("edit_book.html", book=book, book_id=book_id)
 
 
 if __name__ == "__main__":

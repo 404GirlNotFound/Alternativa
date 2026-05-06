@@ -16,14 +16,29 @@
 
         <hr>
 
-        <h2>Dodaj knjigo</h2> 
- 
+        <h2>Dodaj knjigo</h2>
+
         <form action="/add_book" method="post">
             <input type="text" name="title" placeholder="Naslov knjige" required>
 
             <input type="text" name="author" placeholder="Avtor" required>
 
             <input type="text" name="image" placeholder="Link do slike knjige">
+
+            <select name="status" required>
+                <option value="Želim prebrati">Želim prebrati</option>
+                <option value="Berem">Berem</option>
+                <option value="Prebrano">Prebrano</option>
+            </select>
+
+            <select name="rating" required>
+                <option value="0"></option>
+                <option value="1">1 ⭐</option>
+                <option value="2">2 ⭐⭐</option>
+                <option value="3">3 ⭐⭐⭐</option>
+                <option value="4">4 ⭐⭐⭐⭐</option>
+                <option value="5">5 ⭐⭐⭐⭐⭐</option>
+            </select>
 
             <button type="submit">Dodaj knjigo</button>
         </form>
