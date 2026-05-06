@@ -68,5 +68,28 @@ def logout():
     return redirect(url_for("login"))
 
 
+@app.route("/add_book", methods=["POST"])
+def add_book():
+    if "username" not in session:
+        return redirect(url_for("login"))
+
+    title = request.form["title"]
+    author = request.form["author"]
+    image = request.form.get("image", "")
+    status = request.form["status"]
+    rating = request.form["rating"]
+
+    books.insert({
+        "username": session["username"],
+        "title": title,
+        "author": author,
+        "image": image,
+        "status": status,
+        "rating": rating
+    })
+
+    return redirect(url_for("index"))
+
+
 if __name__ == "__main__":
     app.run(debug=True, port=5003)

@@ -14,6 +14,20 @@
         <p>Prijavljen si kot: <strong>{{ session["username"] }}</strong></p>
         <a href="/logout">Odjava</a>
 
+        <hr>
+
+        <h2>Dodaj knjigo</h2> 
+ 
+        <form action="/add_book" method="post">
+            <input type="text" name="title" placeholder="Naslov knjige" required>
+
+            <input type="text" name="author" placeholder="Avtor" required>
+
+            <input type="text" name="image" placeholder="Link do slike knjige">
+
+            <button type="submit">Dodaj knjigo</button>
+        </form>
+
     </div>
 
 </body>
