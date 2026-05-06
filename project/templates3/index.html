@@ -11,7 +11,7 @@
 
         <h1>Moja knjižnica</h1>
 
-        <p>Prijavljen si kot: <strong>{{ session["username"] }}</strong></p>
+        <p>Prijavljeni ste kot: <strong>{{ session["username"] }}</strong></p>
         <a href="/logout">Odjava</a>
 
         <hr>
@@ -19,11 +19,19 @@
         <h2>Dodaj knjigo</h2>
 
         <form action="/add_book" method="post">
-            <input type="text" name="title" placeholder="Naslov knjige" required>
+            <h3>Poišči knjigo:</h3>
 
-            <input type="text" name="author" placeholder="Avtor" required>
+            <input type="text" id="api-title-input" placeholder="Naslov knjige za iskanje">
 
-            <input type="text" name="image" placeholder="Link do slike knjige">
+            <button type="button" onclick="najdiKnjigo()">Išči</button>
+
+            <h3>Ročno vpiši podatke knjige:</h3>
+
+            <input type="text" id="title-input" name="title" placeholder="Naslov knjige" required>
+
+            <input type="text" id="author-input" name="author" placeholder="Avtor" required>
+
+            <input type="text" id="image-input" name="image" placeholder="Link do slike knjige">
 
             <select name="status" required>
                 <option value="Želim prebrati">Želim prebrati</option>
@@ -63,14 +71,44 @@
                         {% if book["rating"] != "0" %}
                             <p><strong>Ocena:</strong> {{ book["rating"] }} / 5 ⭐</p>
                         {% endif %}
+
+                        <a href="/edit_book/{{ book.doc_id }}">Uredi</a>
+
+                        <form action="/delete_book/{{ book.doc_id }}" method="post">
+                            <button type="submit" class="delete-button">Izbriši</button>
+                        </form>
                     </div>
                 {% endfor %}
             </div>
         {% else %}
-            <p>Nimaš še dodanih knjig.</p>
+            <p>Nimate še dodanih knjig.</p>
         {% endif %}
 
     </div>
+
+    <script>
+        function najdiKnjigo() {
+            let title = document.getElementById("api-title-input").value;
+
+            fetch("/api/book?title=" + encodeURIComponent(title))
+                .then(function(response) {
+                    return response.json();
+                })
+                .then(function(book) {
+                    if (book.title != "") {
+                        document.getElementById("title-input").value = book.title;
+                    }
+
+                    if (book.author != "") {
+                        document.getElementById("author-input").value = book.author;
+                    }
+
+                    if (book.image != "") {
+                        document.getElementById("image-input").value = book.image;
+                    }
+                });
+        }
+    </script>
 
 </body>
 </html>

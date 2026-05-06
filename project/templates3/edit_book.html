@@ -16,12 +16,7 @@
 
             <input type="text" name="author" value="{{ book['author'] }}" required>
 
-            <input 
-                type="text" 
-                name="image" 
-                value="{{ book.get('image', '') }}" 
-                placeholder="Link do slike knjige"
-            >
+            <input type="text" name="image" value="{{ book.get('image', '') }}" placeholder="Link do slike knjige">
 
             <select name="status" required>
                 <option value="Želim prebrati" {% if book["status"] == "Želim prebrati" %}selected{% endif %}>

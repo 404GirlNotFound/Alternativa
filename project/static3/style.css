@@ -1,0 +1,82 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #eeeeee;
+    margin: 0;
+    padding: 0;
+}
+
+.container {
+    width: 800px;
+    margin: 30px auto;
+    background-color: white;
+    padding: 25px;
+    border-radius: 10px;
+}
+
+h1, h2, h3 {
+    color: #333333;
+}
+
+input, select, button {
+    display: block;
+    width: 100%;
+    padding: 10px;
+    margin-top: 8px;
+    margin-bottom: 12px;
+    box-sizing: border-box;
+}
+
+button {
+    background-color: #333333;
+    color: white;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+button:hover {
+    background-color: #555555;
+}
+
+a {
+    color: #0066cc;
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+hr {
+    margin-top: 25px;
+    margin-bottom: 25px;
+}
+
+.book-list {
+    display: grid;
+    gap: 20px;
+}
+
+.book-card {
+    background-color: #fafafa;
+    border-left: 5px solid #333333;
+    padding: 15px;
+    border-radius: 8px;
+}
+
+.book-image {
+    width: 180px;
+    max-height: 260px;
+    object-fit: cover;
+    display: block;
+    margin-bottom: 15px;
+    border-radius: 5px;
+}
+
+.delete-button {
+    background-color: #b30000;
+}
+
+.delete-button:hover {
+    background-color: #e60000;
+}

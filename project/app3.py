@@ -1,6 +1,9 @@
-from flask import Flask, render_template, request, redirect, session, url_for
+from flask import Flask, render_template, request, redirect, session, url_for, jsonify
 from tinydb import TinyDB, Query
 import os
+import urllib.request
+import urllib.parse
+import json
 
 app = Flask(__name__, template_folder="templates3", static_folder="static3")
 
@@ -135,6 +138,63 @@ def delete_book(book_id):
         books.remove(doc_ids=[book_id])
 
     return redirect(url_for("index"))
+
+
+@app.route("/api/book")
+def api_book():
+    title = request.args.get("title", "")
+
+    if title == "":
+        return jsonify({
+            "title": "",
+            "author": "",
+            "image": ""
+        })
+
+    title_encoded = urllib.parse.quote(title)
+
+    url = "https://openlibrary.org/search.json?q=" + title_encoded + "&limit=1&fields=title,author_name,cover_i"
+
+    try:
+        response = urllib.request.urlopen(url)
+        data = json.loads(response.read())
+    except:
+        return jsonify({
+            "title": "",
+            "author": "",
+            "image": ""
+        })
+
+    docs = data.get("docs", [])
+
+    if len(docs) == 0:
+        return jsonify({
+            "title": "",
+            "author": "",
+            "image": ""
+        })
+
+    book = docs[0]
+
+    book_title = book.get("title", "")
+
+    authors = book.get("author_name", [])
+
+    if authors:
+        author = authors[0]
+    else:
+        author = ""
+
+    image = ""
+
+    if "cover_i" in book:
+        image = "https://covers.openlibrary.org/b/id/" + str(book["cover_i"]) + ".jpg"
+
+    return jsonify({
+        "title": book_title,
+        "author": author,
+        "image": image
+    })
 
 
 if __name__ == "__main__":
