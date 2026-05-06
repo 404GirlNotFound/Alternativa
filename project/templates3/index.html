@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="sl">
+<head>
+    <meta charset="UTF-8">
+    <title>App3</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+    <div class="container">
+
+        <h1>Moja knjižnica</h1>
+
+        <p>Prijavljen si kot: <strong>{{ session["username"] }}</strong></p>
+        <a href="/logout">Odjava</a>
+
+    </div>
+
+</body>
+</html>

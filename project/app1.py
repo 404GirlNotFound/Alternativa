@@ -35,8 +35,9 @@ def delete_note(note_id):
         return redirect(url_for('login'))
     
     user_notes = notes.search(Note.username == session['username'])
+    user_notes.reverse()
     
-    if 0<= note_id < len(user_notes):
+    if 0 <= note_id < len(user_notes):
         note_delete = user_notes[note_id]
         notes.remove(doc_ids=[note_delete.doc_id])
     
@@ -48,6 +49,7 @@ def index():
         return redirect(url_for('login'))
     
     user_notes = notes.search(Note.username == session['username'])
+    user_notes.reverse()
     
     return render_template('index.html', notes=user_notes, username=session['username'])
 
@@ -92,6 +94,7 @@ def edit_note(note_id):
         return redirect(url_for('login'))
 
     user_notes = notes.search(Note.username == session['username'])
+    user_notes.reverse()
 
     if 0 <= note_id < len(user_notes):
         note_edit = user_notes[note_id]
