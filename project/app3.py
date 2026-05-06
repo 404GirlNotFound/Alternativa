@@ -89,7 +89,7 @@ def add_book():
     })
 
     return redirect(url_for("index"))
- 
+
 
 @app.route("/edit_book/<int:book_id>", methods=["GET", "POST"])
 def edit_book(book_id):
@@ -122,6 +122,19 @@ def edit_book(book_id):
         return redirect(url_for("index"))
 
     return render_template("edit_book.html", book=book, book_id=book_id)
+
+
+@app.route("/delete_book/<int:book_id>", methods=["POST"])
+def delete_book(book_id):
+    if "username" not in session:
+        return redirect(url_for("login"))
+
+    book = books.get(doc_id=book_id)
+
+    if book and book["username"] == session["username"]:
+        books.remove(doc_ids=[book_id])
+
+    return redirect(url_for("index"))
 
 
 if __name__ == "__main__":

@@ -43,6 +43,33 @@
             <button type="submit">Dodaj knjigo</button>
         </form>
 
+        <hr>
+
+        <h2>Moje knjige</h2>
+
+        {% if books %}
+            <div class="book-list">
+                {% for book in books %}
+                    <div class="book-card">
+                        <h3>{{ book["title"] }}</h3>
+
+                        {% if book.get("image") %}
+                            <img src="{{ book['image'] }}" alt="Slika knjige" class="book-image">
+                        {% endif %}
+
+                        <p><strong>Avtor:</strong> {{ book["author"] }}</p>
+                        <p><strong>Status:</strong> {{ book["status"] }}</p>
+
+                        {% if book["rating"] != "0" %}
+                            <p><strong>Ocena:</strong> {{ book["rating"] }} / 5 ⭐</p>
+                        {% endif %}
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <p>Nimaš še dodanih knjig.</p>
+        {% endif %}
+
     </div>
 
 </body>
