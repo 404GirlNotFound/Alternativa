@@ -37,9 +37,8 @@ def delete_note(note_id):
     user_notes = notes.search(Note.username == session['username'])
     user_notes.reverse()
     
-    if 0 <= note_id < len(user_notes):
-        note_delete = user_notes[note_id]
-        notes.remove(doc_ids=[note_delete.doc_id])
+    note_delete = user_notes[note_id]
+    notes.remove(doc_ids=[note_delete.doc_id])
     
     return redirect(url_for('index'))
 
@@ -96,22 +95,21 @@ def edit_note(note_id):
     user_notes = notes.search(Note.username == session['username'])
     user_notes.reverse()
 
-    if 0 <= note_id < len(user_notes):
-        note_edit = user_notes[note_id]
+    note_edit = user_notes[note_id]
 
-        if request.method == 'POST':
-            new_title = request.form['title']
-            new_content = request.form['content']
+    if request.method == 'POST':
+        new_title = request.form['title']
+        new_content = request.form['content']
 
-            notes.update(
-                {
-                    'title': new_title,
-                    'content': new_content
-                },
-                doc_ids=[note_edit.doc_id]
-            )
+        notes.update(
+            {
+                'title': new_title,
+                'content': new_content
+            },
+            doc_ids=[note_edit.doc_id]
+        )
 
-            return redirect(url_for('index'))
+        return redirect(url_for('index'))
 
         return render_template('edit_note.html', note=note_edit, note_id=note_id)
 
