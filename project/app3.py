@@ -167,7 +167,7 @@ def api_book():
 
     docs = data.get("docs", [])
 
-    if len(docs) == 0:
+    if not docs:
         return jsonify({
             "title": "",
             "author": "",
